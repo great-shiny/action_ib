@@ -121,3 +121,5 @@ def post_stock_order(baseurl, token, appkey, appsecret, account_num, exchange_cd
     response = requests.request("POST", url, headers=headers, data=payload)
 
     print(response.text)
+
+    return response.json()

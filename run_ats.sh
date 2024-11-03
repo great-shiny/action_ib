@@ -9,7 +9,7 @@ source /opt/anaconda3/etc/profile.d/conda.sh
 
 conda activate ats_prod_py39
 
-cd ~/z_mac/ws_python/ats_prod/
+cd ~/z_mac/github/action_ib
 
 # account 값에 따라 APP_KEY를 설정합니다.
 case "$account" in

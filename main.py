@@ -29,7 +29,7 @@ def main():
     ticker = get_args().ticker
     account = get_args().account
 
-    webhook_url = "https://hooks.slack.com/services/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"
+    webhook_url = "https://hooks.slack.com/services/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"
 
     # 무매법 초기 변수 설정
     invest_values = config.set_init_invest_params(
@@ -62,7 +62,7 @@ def main():
         'avg_price': ib_params['average_purchase_price'],
         'init_deposit': invest_values['INIT_DEPOSIT'],
         'remain_deposit': ib_params['remain_deposit'],
-
+        'reason': "성공"
     }
 
     # 매수 주문 리스트 확인
@@ -76,7 +76,7 @@ def main():
     # 매수 주문 실행 + 슬랙 알람
     for buy_method, [qty, price] in buy_order_list.items():
         if qty > 0:
-            kis.post_stock_order(
+            response = kis.post_stock_order(
                 api_values['BASE_URL'],
                 api_values['TOKEN'],
                 api_values['APPKEY'],
@@ -89,16 +89,24 @@ def main():
                 "buy",
                 config.OrderType.LOC.value
             )
-            sender.send_slack_msg(
-                env,
-                webhook_url,
-                info_send,
-            )
+            if response['rt_cd'] == "0":
+                sender.send_msg_on_success(
+                    env,
+                    webhook_url,
+                    info_send,
+                )
+            else:
+                info_send['reason'] = response['msg1']
+                sender.send_msg_on_fail(
+                    env,
+                    webhook_url,
+                    info_send,
+                )
 
 
     # 매도 주문 실행 + 슬랙 알람
     info_send['is_buy'] = False
-    kis.post_stock_order(
+    response = kis.post_stock_order(
         api_values['BASE_URL'],
         api_values['TOKEN'],
         api_values['APPKEY'],
@@ -111,17 +119,25 @@ def main():
         "sell",
         config.OrderType.LOC.value
     )
-    sender.send_slack_msg(
-        env,
-        webhook_url,
-        info_send,
-    )
+    if response['rt_cd'] == "0":
+        sender.send_msg_on_success(
+            env,
+            webhook_url,
+            info_send,
+        )
+    else:
+        info_send['reason'] = response['msg1']
+        sender.send_msg_on_fail(
+            env,
+            webhook_url,
+            info_send,
+        )
 
     info_send['order_type'] = "지정가"
     info_send['order_quantity'] = ib_params['sell_threshold_cnt']
     info_send['order_price'] = ib_params['sell_threshold_price']
 
-    kis.post_stock_order(
+    response = kis.post_stock_order(
         api_values['BASE_URL'],
         api_values['TOKEN'],
         api_values['APPKEY'],
@@ -134,11 +150,19 @@ def main():
         "sell",
         config.OrderType.LIMIT.value
     )
-    sender.send_slack_msg(
-        env,
-        webhook_url,
-        info_send,
-    )
+    if response['rt_cd'] == "0":
+        sender.send_msg_on_success(
+            env,
+            webhook_url,
+            info_send,
+        )
+    else:
+        info_send['reason'] = response['msg1']
+        sender.send_msg_on_fail(
+            env,
+            webhook_url,
+            info_send,
+        )
 
 
 if __name__=="__main__":
