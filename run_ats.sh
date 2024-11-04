@@ -5,11 +5,11 @@
 ENV=$1
 account=$2  # 첫 번째 인자를 account로 사용
 
-source /opt/anaconda3/etc/profile.d/conda.sh
-
-conda activate ats_prod_py39
-
-cd ~/z_mac/github/action_ib
+#source /opt/anaconda3/etc/profile.d/conda.sh
+#
+#conda activate ats_prod_py39
+#
+#cd ~/z_mac/github/action_ib
 
 # account 값에 따라 APP_KEY를 설정합니다.
 case "$account" in
@@ -37,4 +37,4 @@ esac
 
 python3 main.py --env "$ENV" --account "$account" --appkey $APP_KEY --appsecret $APP_SECRET --deposit $DEPOSIT --partitions $PARTITIONS --threshold $THRESHOLD --ticker $TICKER
 
-conda deactivate
+#conda deactivate
