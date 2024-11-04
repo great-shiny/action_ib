@@ -1,0 +1,41 @@
+name: Run Bash Script for Python code
+
+on:
+  schedule:
+    # 매일 월요일부터 금요일까지 22시에 실행
+    - cron: '00 22 * * 1-5'
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'  # 필요한 파이썬 버전
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Make run.sh executable
+      run: chmod +x run_ats.sh
+
+    - name: Run the shell script with parameters
+      run: ./run_ats.sh PROD 68112231
+
+    - name: Run the shell script with parameters
+      run: ./run_ats.sh PROD 64552937
+
+    - name: Commit and push changes
+      if: steps.changed-files.outputs.files_changed == 'true'
+      run: |
+         git config user.name "GitHub Actions"
+         git config user.email "actions@github.com"
+         git add .
+         git commit -m "Update articles.json"
+         git push https://${{ secrets.GH_TOKEN }}@github.com/great-shiny/action_ib.git
