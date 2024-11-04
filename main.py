@@ -29,7 +29,7 @@ def main():
     ticker = get_args().ticker
     account = get_args().account
 
-    webhook_url = "https://hooks.slack.com/services/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"
+    webhook_url = "https://hooks.slack.com/services/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"
 
     # 무매법 초기 변수 설정
     invest_values = config.set_init_invest_params(
