@@ -16,7 +16,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.x'  # 필요한 파이썬 버전
+        python-version: '3.9.20'  # 필요한 파이썬 버전
 
     - name: Install dependencies
       run: |
