@@ -2,8 +2,7 @@ name: Run Bash Script for Python code
 
 on:
   schedule:
-    # 매일 월요일부터 금요일까지 22시에 실행
-    - cron: '00 22 * * 1-5'
+    - cron: '05 13 * * 1-5' # UTC
 
 jobs:
   run-script:
