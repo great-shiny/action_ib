@@ -1,8 +1,10 @@
 import argparse
+import os
 
 #
 
 import apis.kis as kis
+from dotenv import load_dotenv
 import models.ib_v_2_2 as model
 import utils.sender as sender
 import common.config as config
@@ -13,26 +15,25 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-env", "--env", dest="env", action="store")  # env DEV or PROD
     parser.add_argument("-account", "--account", dest="account", action="store")  # 계좌번호
-    parser.add_argument("-appkey", "--appkey", dest="appkey", action="store")  # appkey
-    parser.add_argument("-appsecret", "--appsecret", dest="appsecret", action="store")  # appsecret
     parser.add_argument("-deposit", "--deposit", dest="deposit", type=int, action="store")  # 초기 원금
     parser.add_argument("-partitions", "--partitions", dest="partitions", type=int, action="store")  # 분할 수
     parser.add_argument("-threshold", "--threshold", dest="threshold", type=int, action="store")  # 매도 지점
-    parser.add_argument("-ticker", "--ticker", dest="ticker", action="store")  # 종목코드(ex, SOXL, NAIL)
+    parser.add_argument("-ticker", "--ticker", dest="ticker", default='SOXL', action="store")  # 종목코드(ex, SOXL, NAIL)
 
     return parser.parse_args()
 
 
 # Defining main function
 def main():
+    load_dotenv()
+
     env = get_args().env
     ticker = get_args().ticker
     account = get_args().account
 
-    if env == 'DEV':
-        webhook_url = "https://hooks.slack.com/services/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"
-    elif env == 'PROD':
-        webhook_url = "https://hooks.slack.com/services/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"
+    webhook_url = os.getenv("SLACK_WEBHOOK_URL_DEV") if env == 'DEV' else os.getenv("SLACK_WEBHOOK_URL_PROD")
+    appkey = os.getenv("DEV_KIS_APP_KEY") if env == 'DEV' else os.getenv(f"PROD_KIS_{account}_APP_KEY")
+    appsecret = os.getenv("DEV_KIS_APP_SECRET") if env == 'DEV' else os.getenv(f"PROD_KIS_{account}_APP_SECRET")
 
     # 무매법 초기 변수 설정
     invest_values = config.set_init_invest_params(
@@ -43,14 +44,28 @@ def main():
 
     # api 호출 전 초기화
     api_values = config.set_init_api_params(
-        env='PROD',
+        env=env,
         account_num=account,
-        appkey=get_args().appkey,
-        appsecret=get_args().appsecret,
+        appkey=appkey,
+        appsecret=appsecret,
     )
 
     # 무매법 진행을 위한 변수 계산
-    ib_params = model.calc_daily_value(api_values, invest_values)
+    dev_ib_params = {
+        't': 10,
+        'loc_buy_price': 35,
+        'loc_buy_cnt': 10,
+        'top_buy_price': 39,
+        'top_buy_cnt': 9,
+        'avg_buy_cnt': 6,
+        'loc_sell_price': 40,
+        'loc_sell_cnt': 1,
+        'sell_threshold_price': 44,
+        'sell_threshold_cnt': 3,
+        'average_purchase_price': 35,
+        'remain_deposit': 3333,
+    }
+    ib_params = dev_ib_params if env == 'DEV' else model.calc_daily_value(api_values, invest_values)
 
     info_send = {
         'is_buy': True,
@@ -80,6 +95,7 @@ def main():
     for buy_method, [qty, price] in buy_order_list.items():
         if qty > 0:
             response = kis.post_stock_order(
+                env,
                 api_values['BASE_URL'],
                 api_values['TOKEN'],
                 api_values['APPKEY'],
@@ -90,7 +106,7 @@ def main():
                 str(qty),
                 str(price),
                 "buy",
-                config.OrderType.LOC.value
+                config.OrderType.LIMIT.value if env == 'DEV' else config.OrderType.LOC.value
             )
             if response['rt_cd'] == "0":
                 sender.send_msg_on_success(
@@ -110,6 +126,7 @@ def main():
     # 매도 주문 실행 + 슬랙 알람
     info_send['is_buy'] = False
     response = kis.post_stock_order(
+        env,
         api_values['BASE_URL'],
         api_values['TOKEN'],
         api_values['APPKEY'],
@@ -120,7 +137,7 @@ def main():
         str(ib_params['loc_sell_cnt']),
         str(ib_params['loc_sell_price']),
         "sell",
-        config.OrderType.LOC.value
+        config.OrderType.LIMIT.value if env == 'DEV' else config.OrderType.LOC.value
     )
     if response['rt_cd'] == "0":
         sender.send_msg_on_success(
@@ -141,6 +158,7 @@ def main():
     info_send['order_price'] = ib_params['sell_threshold_price']
 
     response = kis.post_stock_order(
+        env,
         api_values['BASE_URL'],
         api_values['TOKEN'],
         api_values['APPKEY'],

@@ -90,14 +90,14 @@ def get_overseas_present_balance(baseurl, token, appkey, appsecret, account_num,
 
 
 # 주문 함수
-def post_stock_order(baseurl, token, appkey, appsecret, account_num, exchange_cd, ticker, qty, price, buy_or_sell,
+def post_stock_order(env, baseurl, token, appkey, appsecret, account_num, exchange_cd, ticker, qty, price, buy_or_sell,
                      ord_type):
     url = baseurl + "/uapi/overseas-stock/v1/trading/order"
 
     if buy_or_sell == "buy":
-        tr_id = "TTTT1002U"
+        tr_id = "VTTT1002U" if env == 'DEV' else "TTTT1002U"
     elif buy_or_sell == "sell":
-        tr_id = "TTTT1006U"
+        tr_id = "VTTT1001U" if env == 'DEV' else "TTTT1006U"
 
     payload = json.dumps({
         "CANO": account_num,

@@ -21,6 +21,22 @@ jobs:
       run: |
         pip install -r requirements.txt
 
+    - name: access to secrets
+      run: |
+        echo "SLACK_WEBHOOK_URL_DEV=$SLACK_WEBHOOK_URL_DEV" >> .env
+        echo "SLACK_WEBHOOK_URL_PROD=$SLACK_WEBHOOK_URL_PROD" >> .env
+        echo "PROD_KIS_68112231_APP_KEY=$PROD_KIS_68112231_APP_KEY" >> .env
+        echo "PROD_KIS_68112231_APP_SECRET=$PROD_KIS_68112231_APP_SECRET" >> .env
+        echo "PROD_KIS_64552937_APP_KEY=$PROD_KIS_64552937_APP_KEY" >> .env
+        echo "PROD_KIS_64552937_APP_SECRET=$PROD_KIS_64552937_APP_SECRET" >> .env
+      env: |
+        SLACK_WEBHOOK_URL_DEV: ${{secrets.SLACK_WEBHOOK_URL_DEV}}
+        SLACK_WEBHOOK_URL_PROD: ${{secrets.SLACK_WEBHOOK_URL_PROD}}
+        PROD_KIS_68112231_APP_KEY: ${{secrets.PROD_KIS_68112231_APP_KEY}}
+        PROD_KIS_68112231_APP_SECRET: ${{secrets.PROD_KIS_68112231_APP_SECRET}}
+        PROD_KIS_64552937_APP_KEY: ${{secrets.PROD_KIS_64552937_APP_KEY}}
+        PROD_KIS_64552937_APP_SECRET: ${{secrets.PROD_KIS_64552937_APP_SECRET}}
+
     - name: Make run.sh executable
       run: chmod +x run_ats.sh
 
@@ -38,3 +54,4 @@ jobs:
          git add .
          git commit -m "Update articles.json"
          git push https://${{ secrets.GH_TOKEN }}@github.com/great-shiny/action_ib.git
+     
