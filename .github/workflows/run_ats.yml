@@ -2,7 +2,7 @@ name: Run Bash Script for Python code
 
 on:
   schedule:
-    - cron: '05 13 * * 1-5' # UTC
+    - cron: '05 20 * * 1-5' # UTC, 05:05 KST
 
 jobs:
   run-script:
