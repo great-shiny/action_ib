@@ -15,13 +15,13 @@ fi
 case "$account" in
   "68112231")
     DEPOSIT=30655
-    PARTITIONS=40
+    PARTITIONS=30
     THRESHOLD=15
     TICKER="NAIL"
     ;;
   "64552937")
     DEPOSIT=23087
-    PARTITIONS=40
+    PARTITIONS=30
     THRESHOLD=15
     TICKER="SOXL"
     ;;
