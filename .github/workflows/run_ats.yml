@@ -29,13 +29,6 @@ jobs:
         echo "PROD_KIS_68112231_APP_SECRET=$PROD_KIS_68112231_APP_SECRET" >> .env
         echo "PROD_KIS_64552937_APP_KEY=$PROD_KIS_64552937_APP_KEY" >> .env
         echo "PROD_KIS_64552937_APP_SECRET=$PROD_KIS_64552937_APP_SECRET" >> .env
-      env: |
-        SLACK_WEBHOOK_URL_DEV: ${{secrets.SLACK_WEBHOOK_URL_DEV}}
-        SLACK_WEBHOOK_URL_PROD: ${{secrets.SLACK_WEBHOOK_URL_PROD}}
-        PROD_KIS_68112231_APP_KEY: ${{secrets.PROD_KIS_68112231_APP_KEY}}
-        PROD_KIS_68112231_APP_SECRET: ${{secrets.PROD_KIS_68112231_APP_SECRET}}
-        PROD_KIS_64552937_APP_KEY: ${{secrets.PROD_KIS_64552937_APP_KEY}}
-        PROD_KIS_64552937_APP_SECRET: ${{secrets.PROD_KIS_64552937_APP_SECRET}}
 
     - name: Make run.sh executable
       run: chmod +x run_ats.sh
