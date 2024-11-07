@@ -3,6 +3,7 @@ name: Run Bash Script for Python code
 on:
   schedule:
     - cron: '05 20 * * 1-5' # UTC, 05:05 KST
+  workflow_dispatch: # 수동 트리거 옵션 추가
 
 jobs:
   run-script:
