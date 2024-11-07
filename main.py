@@ -4,7 +4,6 @@ import os
 #
 
 import apis.kis as kis
-from dotenv import load_dotenv
 import models.ib_v_2_2 as model
 import utils.sender as sender
 import common.config as config
@@ -25,7 +24,6 @@ def get_args():
 
 # Defining main function
 def main():
-    load_dotenv()
 
     env = get_args().env
     ticker = get_args().ticker
