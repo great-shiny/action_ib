@@ -107,6 +107,8 @@ def main():
                 config.OrderType.LIMIT.value if env == 'DEV' else config.OrderType.LOC.value
             )
             if response['rt_cd'] == "0":
+                info_send['order_quantity'] = qty
+                info_send['order_price'] = price
                 sender.send_msg_on_success(
                     env,
                     webhook_url,
@@ -123,6 +125,8 @@ def main():
 
     # 매도 주문 실행 + 슬랙 알람
     info_send['is_buy'] = False
+    info_send['order_quantity'] = ib_params['loc_sell_cnt']
+    info_send['order_price'] = ib_params['loc_sell_price']
     response = kis.post_stock_order(
         env,
         api_values['BASE_URL'],
