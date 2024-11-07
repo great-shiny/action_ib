@@ -88,7 +88,7 @@ def calc_daily_value(api_values, invest_value):
         config.Currency.USD.value,
     )
 
-    current_purchase_amount = float(present_balance['output1'][0]['frcr_pchs_amt'])  # 현재매입금액
+    current_purchase_amount = round(float(present_balance['output1'][0]['frcr_pchs_amt']), 2)  # 현재매입금액
     average_purchase_price = round(float(present_balance['output1'][0]['avg_unpr3']), 2)  # 평단가
 
     t = math.ceil(current_purchase_amount / purchase_amount * 10) / 10
