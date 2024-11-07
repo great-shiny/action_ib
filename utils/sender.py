@@ -109,7 +109,7 @@ def send_msg_on_fail(env, webhook_url, info):
     # 매수/매도 텍스트 설정
     action_text = ":red_circle: 매수" if info['is_buy'] else ":large_blue_circle: 매도"
 
-    today = datetime.datetime.now().strftime("%Y-%m-%d(%a.) %H:%M:%S")
+    today = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d(%a.) %H:%M:%S")
 
     # Slack 메시지 블록 구성
     message = {
