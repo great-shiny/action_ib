@@ -155,7 +155,6 @@ def main():
             info_send,
         )
 
-    info_send['order_type'] = "지정가"
     info_send['order_quantity'] = ib_params['sell_threshold_cnt']
     info_send['order_price'] = ib_params['sell_threshold_price']
 
@@ -171,7 +170,7 @@ def main():
         str(ib_params['sell_threshold_cnt']),
         str(ib_params['sell_threshold_price']),
         "sell",
-        config.OrderType.LIMIT.value
+        config.OrderType.LOC.value
     )
     if response['rt_cd'] == "0":
         sender.send_msg_on_success(

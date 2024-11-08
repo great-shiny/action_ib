@@ -101,7 +101,7 @@ def calc_daily_value(api_values, invest_value):
     print("[info] 현재 평단가: $", average_purchase_price)
 
     print('=' * 30)
-    remain_deposit = invest_value['INIT_DEPOSIT'] - current_purchase_amount
+    remain_deposit = round(invest_value['INIT_DEPOSIT'] - current_purchase_amount, 2)
     current_quantity = float(present_balance['output1'][0]['ccld_qty_smtl1'])  # 현재 보유수량
     print("[info] 현재 보유수량: ", current_quantity, '주')
     print("[info] 남은 예수금: ", remain_deposit)
